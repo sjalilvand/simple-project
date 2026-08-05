@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Git Dashboard واقعی</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <header class="hero">
+      <div>
+        <h1>Git Dashboard واقعی</h1>
+        <p>
+          مانیتورینگ، مشاهده تغییرات، اجرای فرمان‌های Git، commit، push، pull،
+          branch و بازگشت امن تغییرات در پروژه محلی.
+        </p>
+      </div>
+
+      <div class="hero-actions">
+        <button onclick="refreshAll()">به‌روزرسانی همه</button>
+        <button class="secondary" onclick="copyRepoInfo()">کپی اطلاعات پروژه</button>
+      </div>
+    </header>
+
+    <section class="warning-box">
+      <strong>نکته امنیتی:</strong>
+      این داشبورد فقط برای اجرای محلی روی سیستم خودت است.
+      آن را روی اینترنت عمومی اجرا نکن.
+      اشتراک‌گذاری کد داشبورد از طریق GitHub مشکلی ندارد؛ اما خود سرور محلی را public نکن.
+    </section>
+
+    <main class="grid">
+      <section class="card">
+        <div class="card-title">
+          <h2>وضعیت فعلی Git</h2>
+          <button onclick="loadStatus()">Refresh</button>
+        </div>
+
+        <div class="info-line">
+          <span>Branch فعلی:</span>
+          <strong id="currentBranch">---</strong>
+        </div>
+
+        <pre id="statusOutput">در حال بارگذاری...</pre>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <h2>Remote / GitHub</h2>
+          <button onclick="loadRemotes()">Refresh</button>
+        </div>
+
+        <pre id="remoteOutput">در حال بارگذاری...</pre>
+
+        <div class="small-actions">
+          <button onclick="copyRemoteUrl()">کپی لینک GitHub</button>
+        </div>
+      </section>
+
+      <section class="card wide">
+        <div class="card-title">
+          <h2>تاریخچه Commitها</h2>
+          <button onclick="loadLog()">Refresh</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Hash</th>
+                <th>پیام</th>
+                <th>نویسنده</th>
+                <th>زمان</th>
+              </tr>
+            </thead>
+            <tbody id="logTable">
+              <tr>
+                <td colspan="4">در حال بارگذاری...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <h2>Branchها</h2>
+          <button onclick="loadBranches()">Refresh</button>
+        </div>
+
+        <pre id="branchesOutput">در حال بارگذاری...</pre>
+      </section>
+
+      <section class="card">
+        <h2>عملیات سریع</h2>
+
+        <div class="actions">
+          <button onclick="addAll()">git add .</button>
+          <button onclick="pull()">git pull</button>
+          <button onclick="push()">git push</button>
+          <button class="secondary" onclick="loadDiff()">نمایش diff</button>
+        </div>
+
+        <hr />
+
+        <label>پیام Commit</label>
+        <input id="commitMessage" type="text" placeholder="مثلاً: Update dashboard" />
+
+        <button onclick="commitChanges()">Commit</button>
+      </section>
+
+      <section class="card">
+        <h2>مدیریت Branch</h2>
+
+        <label>نام branch جدید</label>
+        <input id="newBranchName" type="text" placeholder="feature/my-task" />
+
+        <button onclick="createBranch()">ساخت branch و رفتن روی آن</button>
+
+        <hr />
+
+        <label>رفتن به branch</label>
+        <input id="switchBranchName" type="text" placeholder="main یا feature/my-task" />
+
+        <button onclick="switchBranch()">Switch Branch</button>
+      </section>
+
+      <section class="card">
+        <h2>بازگشت تغییرات</h2>
+
+        <div class="danger-box">
+          قبل از اجرای این بخش‌ها، حتماً وضعیت پروژه را بررسی کن.
+        </div>
+
+        <label>برگرداندن یک فایل به آخرین commit</label>
+        <input id="restoreFilePath" type="text" placeholder="مثلاً: app.py" />
+
+        <button class="danger" onclick="restoreFile()">Restore File</button>
+
+        <hr />
+
+        <label>Revert کردن یک Commit</label>
+        <input id="revertHash" type="text" placeholder="مثلاً: e027f90" />
+
+        <button class="danger" onclick="revertCommit()">Revert Commit</button>
+      </section>
+
+      <section class="card wide">
+        <div class="card-title">
+          <h2>Diff تغییرات</h2>
+          <button onclick="loadDiff()">Refresh</button>
+        </div>
+
+        <h3>تغییرات هنوز stage نشده</h3>
+        <pre id="diffOutput">برای مشاهده، روی نمایش diff کلیک کن.</pre>
+
+        <h3>تغییرات stage شده</h3>
+        <pre id="stagedDiffOutput">برای مشاهده، روی نمایش diff کلیک کن.</pre>
+      </section>
+
+      <section class="card wide">
+        <div class="card-title">
+          <h2>خروجی آخرین فرمان</h2>
+          <button onclick="clearCommandOutput()">پاک کردن</button>
+        </div>
+
+        <pre id="commandOutput">هنوز فرمانی اجرا نشده است.</pre>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

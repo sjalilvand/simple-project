@@ -1,0 +1,262 @@
+:root {
+  --bg: #0f172a;
+  --card: #111827;
+  --card2: #1e293b;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: #334155;
+  --code: #020617;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.20), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.14), transparent 28%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+}
+
+.app {
+  width: min(1250px, 94%);
+  margin: auto;
+  padding: 28px 0 80px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(34,197,94,0.12));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 32px;
+  margin-bottom: 22px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+}
+
+.hero h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 46px);
+  color: var(--white);
+}
+
+.hero p {
+  color: var(--muted);
+  margin: 0;
+  max-width: 780px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.warning-box,
+.danger-box {
+  border-radius: 18px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+}
+
+.warning-box {
+  border-right: 5px solid var(--warning);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.danger-box {
+  border-right: 5px solid var(--danger);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: rgba(17, 24, 39, 0.90);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+}
+
+.card.wide {
+  grid-column: 1 / -1;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+h2 {
+  margin: 0 0 16px;
+  color: var(--white);
+  font-size: 22px;
+}
+
+h3 {
+  color: var(--accent);
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+pre {
+  direction: ltr;
+  text-align: left;
+  background: var(--code);
+  border: 1px solid var(--border);
+  color: #d1fae5;
+  padding: 16px;
+  border-radius: 16px;
+  overflow-x: auto;
+  min-height: 80px;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+button {
+  border: 0;
+  background: linear-gradient(135deg, var(--accent), var(--success));
+  color: #001018;
+  font-weight: bold;
+  padding: 10px 14px;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+button.secondary {
+  background: #334155;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.danger {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+}
+
+.actions,
+.small-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+label {
+  display: block;
+  margin: 12px 0 6px;
+  color: var(--muted);
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 13px;
+  background: var(--code);
+  border: 1px solid var(--border);
+  color: var(--text);
+  outline: none;
+  margin-bottom: 12px;
+}
+
+input:focus {
+  border-color: var(--accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 18px 0;
+}
+
+.info-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.info-line strong {
+  color: var(--success);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 11px;
+  vertical-align: top;
+}
+
+th {
+  background: var(--card2);
+  color: var(--white);
+}
+
+td {
+  background: rgba(15, 23, 42, 0.70);
+}
+
+.hash {
+  direction: ltr;
+  text-align: left;
+  font-family: Consolas, monospace;
+  color: #93c5fd;
+}
+
+.ok {
+  color: var(--success);
+}
+
+.fail {
+  color: var(--danger);
+}
+
+@media (max-width: 850px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
