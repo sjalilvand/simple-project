@@ -4,172 +4,232 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Git Dashboard واقعی</title>
+  <title>Git Dashboard آموزشی</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="app">
+  <div class="layout">
+
     <header class="hero">
       <div>
-        <h1>Git Dashboard واقعی</h1>
+        <div class="eyebrow">نسخه آموزشی ساده</div>
+        <h1>Git Dashboard</h1>
         <p>
-          مانیتورینگ، مشاهده تغییرات، اجرای فرمان‌های Git، commit، push، pull،
-          branch و بازگشت امن تغییرات در پروژه محلی.
+          این داشبورد کمک می‌کند بفهمی الان پروژه‌ات در چه وضعیتی است،
+          چه تغییراتی داری، چطور آن‌ها را ذخیره کنی و چطور به GitHub بفرستی.
         </p>
       </div>
 
-      <div class="hero-actions">
-        <button onclick="refreshAll()">به‌روزرسانی همه</button>
-        <button class="secondary" onclick="copyRepoInfo()">کپی اطلاعات پروژه</button>
+      <div class="hero-card">
+        <span>Branch فعلی</span>
+        <strong id="currentBranch">---</strong>
+        <small id="repoPath">در حال دریافت مسیر پروژه...</small>
       </div>
     </header>
 
-    <section class="warning-box">
+    <section class="security-note">
       <strong>نکته امنیتی:</strong>
-      این داشبورد فقط برای اجرای محلی روی سیستم خودت است.
+      این برنامه فقط برای اجرای محلی است:
+      <code>http://127.0.0.1:8765</code>
       آن را روی اینترنت عمومی اجرا نکن.
-      اشتراک‌گذاری کد داشبورد از طریق GitHub مشکلی ندارد؛ اما خود سرور محلی را public نکن.
     </section>
 
-    <main class="grid">
-      <section class="card">
-        <div class="card-title">
-          <h2>وضعیت فعلی Git</h2>
-          <button onclick="loadStatus()">Refresh</button>
-        </div>
+    <main class="main-grid">
 
-        <div class="info-line">
-          <span>Branch فعلی:</span>
-          <strong id="currentBranch">---</strong>
-        </div>
+      <section class="panel guide-panel">
+        <h2>مسیر ساده کار با Git</h2>
 
-        <pre id="statusOutput">در حال بارگذاری...</pre>
-      </section>
+        <div class="steps">
+          <div class="step active">
+            <div class="num">1</div>
+            <div>
+              <h3>بررسی وضعیت</h3>
+              <p>ببین Git چه تغییراتی در پروژه دیده است.</p>
+              <code>git status</code>
+            </div>
+          </div>
 
-      <section class="card">
-        <div class="card-title">
-          <h2>Remote / GitHub</h2>
-          <button onclick="loadRemotes()">Refresh</button>
-        </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <h3>آماده‌سازی تغییرات</h3>
+              <p>تغییرات را برای ذخیره شدن آماده کن.</p>
+              <code>git add .</code>
+            </div>
+          </div>
 
-        <pre id="remoteOutput">در حال بارگذاری...</pre>
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <h3>ذخیره نسخه جدید</h3>
+              <p>یک نقطه ذخیره در تاریخچه Git بساز.</p>
+              <code>git commit -m "message"</code>
+            </div>
+          </div>
 
-        <div class="small-actions">
-          <button onclick="copyRemoteUrl()">کپی لینک GitHub</button>
-        </div>
-      </section>
-
-      <section class="card wide">
-        <div class="card-title">
-          <h2>تاریخچه Commitها</h2>
-          <button onclick="loadLog()">Refresh</button>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Hash</th>
-                <th>پیام</th>
-                <th>نویسنده</th>
-                <th>زمان</th>
-              </tr>
-            </thead>
-            <tbody id="logTable">
-              <tr>
-                <td colspan="4">در حال بارگذاری...</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <h3>ارسال به GitHub</h3>
+              <p>commitهای محلی را با دیگران به اشتراک بگذار.</p>
+              <code>git push</code>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="card">
-        <div class="card-title">
-          <h2>Branchها</h2>
-          <button onclick="loadBranches()">Refresh</button>
+      <section class="panel summary-panel">
+        <div class="panel-head">
+          <div>
+            <h2>وضعیت پروژه</h2>
+            <p>خلاصه‌ای ساده از وضعیت فعلی Git</p>
+          </div>
+          <button onclick="refreshAll()">به‌روزرسانی</button>
         </div>
 
-        <pre id="branchesOutput">در حال بارگذاری...</pre>
-      </section>
+        <div class="stats">
+          <div class="stat">
+            <span>فایل جدید</span>
+            <strong id="newCount">0</strong>
+          </div>
 
-      <section class="card">
-        <h2>عملیات سریع</h2>
+          <div class="stat">
+            <span>تغییر کرده</span>
+            <strong id="modifiedCount">0</strong>
+          </div>
 
-        <div class="actions">
-          <button onclick="addAll()">git add .</button>
-          <button onclick="pull()">git pull</button>
-          <button onclick="push()">git push</button>
-          <button class="secondary" onclick="loadDiff()">نمایش diff</button>
+          <div class="stat">
+            <span>حذف شده</span>
+            <strong id="deletedCount">0</strong>
+          </div>
+
+          <div class="stat">
+            <span>آماده Commit</span>
+            <strong id="stagedCount">0</strong>
+          </div>
         </div>
 
-        <hr />
-
-        <label>پیام Commit</label>
-        <input id="commitMessage" type="text" placeholder="مثلاً: Update dashboard" />
-
-        <button onclick="commitChanges()">Commit</button>
+        <div id="cleanMessage" class="clean-message hidden">
+          پروژه تمیز است. یعنی Git تغییر جدیدی برای ذخیره کردن نمی‌بیند.
+        </div>
       </section>
 
-      <section class="card">
-        <h2>مدیریت Branch</h2>
-
-        <label>نام branch جدید</label>
-        <input id="newBranchName" type="text" placeholder="feature/my-task" />
-
-        <button onclick="createBranch()">ساخت branch و رفتن روی آن</button>
-
-        <hr />
-
-        <label>رفتن به branch</label>
-        <input id="switchBranchName" type="text" placeholder="main یا feature/my-task" />
-
-        <button onclick="switchBranch()">Switch Branch</button>
-      </section>
-
-      <section class="card">
-        <h2>بازگشت تغییرات</h2>
-
-        <div class="danger-box">
-          قبل از اجرای این بخش‌ها، حتماً وضعیت پروژه را بررسی کن.
+      <section class="panel wide">
+        <div class="panel-head">
+          <div>
+            <h2>تغییرات دیده‌شده توسط Git</h2>
+            <p>اینجا به جای diff شلوغ، فایل‌ها به زبان ساده نمایش داده می‌شوند.</p>
+          </div>
+          <button class="secondary" onclick="loadStatus()">بررسی دوباره</button>
         </div>
 
-        <label>برگرداندن یک فایل به آخرین commit</label>
-        <input id="restoreFilePath" type="text" placeholder="مثلاً: app.py" />
-
-        <button class="danger" onclick="restoreFile()">Restore File</button>
-
-        <hr />
-
-        <label>Revert کردن یک Commit</label>
-        <input id="revertHash" type="text" placeholder="مثلاً: e027f90" />
-
-        <button class="danger" onclick="revertCommit()">Revert Commit</button>
+        <div id="changeList" class="change-list">
+          <div class="empty">در حال بررسی تغییرات...</div>
+        </div>
       </section>
 
-      <section class="card wide">
-        <div class="card-title">
-          <h2>Diff تغییرات</h2>
-          <button onclick="loadDiff()">Refresh</button>
+      <section class="panel action-panel">
+        <h2>عملیات اصلی</h2>
+        <p>
+          این بخش همان مسیر اصلی Git است:
+          تغییرات را آماده کن، commit بزن، بعد push کن.
+        </p>
+
+        <div class="action-box">
+          <div>
+            <h3>1) آماده‌سازی تغییرات</h3>
+            <p>همه تغییرات فعلی را برای commit آماده می‌کند.</p>
+            <code>git add .</code>
+          </div>
+          <button onclick="addAll()">آماده‌سازی تغییرات</button>
         </div>
 
-        <h3>تغییرات هنوز stage نشده</h3>
-        <pre id="diffOutput">برای مشاهده، روی نمایش diff کلیک کن.</pre>
+        <div class="action-box">
+          <div>
+            <h3>2) ذخیره نسخه جدید</h3>
+            <p>یک commit جدید در تاریخچه Git می‌سازد.</p>
+            <code>git commit -m "message"</code>
+          </div>
 
-        <h3>تغییرات stage شده</h3>
-        <pre id="stagedDiffOutput">برای مشاهده، روی نمایش diff کلیک کن.</pre>
-      </section>
+          <input
+            id="commitMessage"
+            type="text"
+            placeholder="مثلاً: Improve Git dashboard UI"
+          />
 
-      <section class="card wide">
-        <div class="card-title">
-          <h2>خروجی آخرین فرمان</h2>
-          <button onclick="clearCommandOutput()">پاک کردن</button>
+          <button onclick="commitChanges()">ذخیره نسخه جدید</button>
         </div>
 
-        <pre id="commandOutput">هنوز فرمانی اجرا نشده است.</pre>
+        <div class="action-box">
+          <div>
+            <h3>3) ارسال به GitHub</h3>
+            <p>commitهای محلی را روی GitHub منتشر می‌کند.</p>
+            <code>git push</code>
+          </div>
+          <button onclick="pushChanges()">ارسال به GitHub</button>
+        </div>
       </section>
+
+      <section class="panel action-panel">
+        <h2>شروع کار تیمی</h2>
+        <p>
+          قبل از شروع کار جدید، بهتر است آخرین تغییرات را از GitHub بگیری.
+        </p>
+
+        <div class="action-box">
+          <div>
+            <h3>دریافت آخرین تغییرات</h3>
+            <p>اگر دوستانت چیزی push کرده باشند، این دستور آن را می‌گیرد.</p>
+            <code>git pull</code>
+          </div>
+          <button onclick="pullChanges()">دریافت از GitHub</button>
+        </div>
+
+        <div class="remote-box">
+          <h3>لینک GitHub پروژه</h3>
+          <p id="remoteText">در حال دریافت لینک...</p>
+          <button class="secondary" onclick="copyRemote()">کپی لینک</button>
+        </div>
+      </section>
+
+      <section class="panel wide">
+        <div class="panel-head">
+          <div>
+            <h2>تاریخچه ذخیره‌ها</h2>
+            <p>آخرین commitهای پروژه</p>
+          </div>
+          <button class="secondary" onclick="loadLog()">به‌روزرسانی تاریخچه</button>
+        </div>
+
+        <div id="timeline" class="timeline">
+          <div class="empty">در حال دریافت تاریخچه...</div>
+        </div>
+      </section>
+
+      <section class="panel wide">
+        <div class="panel-head">
+          <div>
+            <h2>جزئیات فنی اختیاری</h2>
+            <p>اگر خواستی دقیق‌تر ببینی Git چه چیزی می‌گوید.</p>
+          </div>
+
+          <div class="head-actions">
+            <button class="secondary" onclick="toggleDiff()">نمایش / مخفی کردن Diff</button>
+            <button class="secondary" onclick="clearOutput()">پاک کردن خروجی</button>
+          </div>
+        </div>
+
+        <div id="diffArea" class="hidden">
+          <h3>Diff تغییرات</h3>
+          <pre id="diffOutput">برای دریافت diff دکمه بالا را بزن.</pre>
+        </div>
+
+        <h3>نتیجه آخرین عملیات</h3>
+        <pre id="commandOutput">هنوز عملیاتی انجام نشده است.</pre>
+      </section>
+
     </main>
   </div>
 
