@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>راهنمای کامل Git و GitHub</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --card2: #1e293b;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code: #020617;
+      --border: #334155;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Tahoma, Vazirmatn, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.25), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(1150px, 94%);
+      margin: auto;
+      padding: 30px 0 80px;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(34,197,94,0.14));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 40px 32px;
+      margin-top: 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    header h1 {
+      font-size: clamp(30px, 5vw, 52px);
+      margin: 0 0 15px;
+      color: var(--white);
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 900px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.65);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    nav {
+      margin: 24px 0;
+      padding: 18px;
+      background: rgba(15,23,42,0.8);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    nav strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    nav .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    section {
+      background: rgba(17,24,39,0.88);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      margin: 22px 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.24);
+    }
+
+    h2 {
+      color: var(--white);
+      margin-top: 0;
+      font-size: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    h3 {
+      color: var(--accent);
+      margin-top: 28px;
+      font-size: 21px;
+    }
+
+    h4 {
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    p, li {
+      color: var(--text);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        position: static;
+      }
+    }
+
+    .mini-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .mini-card h3 {
+      margin-top: 0;
+    }
+
+    .note {
+      border-right: 5px solid var(--accent);
+      background: rgba(56,189,248,0.09);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin: 18px 0;
+    }
+
+    .warning {
+      border-right: 5px solid var(--warning);
+      background: rgba(245,158,11,0.09);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin: 18px 0;
+    }
+
+    .danger {
+      border-right: 5px solid var(--danger);
+      background: rgba(239,68,68,0.09);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin: 18px 0;
+    }
+
+    .success {
+      border-right: 5px solid var(--accent2);
+      background: rgba(34,197,94,0.09);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin: 18px 0;
+    }
+
+    .cmd {
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--code);
+    }
+
+    .cmd-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #111827;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cmd-title {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    button.copy-btn {
+      border: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #001018;
+      font-weight: bold;
+      padding: 7px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    button.copy-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      direction: ltr;
+      text-align: left;
+      overflow-x: auto;
+      color: #d1fae5;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--card2);
+      color: var(--white);
+    }
+
+    td {
+      background: rgba(15,23,42,0.55);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 40px;
+      padding: 20px;
+    }
+
+    .kbd {
+      display: inline-block;
+      direction: ltr;
+      background: var(--code);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 8px;
+      color: #d1fae5;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>راهنمای کامل و عملی Git و GitHub</h1>
+      <p>
+        این فایل یک مرجع سریع و کاربردی برای یادگیری و یادآوری Git و GitHub است.
+        هر زمان دستوری یادت رفت، می‌توانی به این فایل مراجعه کنی و دستورات را مستقیم کپی کنی.
+      </p>
+
+      <div class="badge-row">
+        <span class="badge">Git از صفر</span>
+        <span class="badge">GitHub عملی</span>
+        <span class="badge">دستورات قابل کپی</span>
+        <span class="badge">توضیح نحوه ذخیره‌سازی Git</span>
+        <span class="badge">مثال پروژه ساده</span>
+      </div>
+    </header>
+
+    <nav>
+      <strong>فهرست سریع</strong>
+      <div class="links">
+        <a href="#intro">Git چیست؟</a>
+        <a href="#difference">Git vs GitHub</a>
+        <a href="#storage">Git چه چیزی و کجا ذخیره می‌کند؟</a>
+        <a href="#workflow">چرخه کاری Git</a>
+        <a href="#start">شروع پروژه</a>
+        <a href="#commands">دستورات مهم</a>
+        <a href="#github">اتصال به GitHub</a>
+        <a href="#branches">Branch و Merge</a>
+        <a href="#ignore">gitignore</a>
+        <a href="#team">کار تیمی</a>
+        <a href="#problems">خطاهای رایج</a>
+        <a href="#example">مثال کامل</a>
+      </div>
+    </nav>
+
+    <section id="intro">
+      <h2>1. Git چیست؟</h2>
+      <p>
+        <strong>Git</strong> یک سیستم کنترل نسخه یا Version Control System است.
+        یعنی تغییرات پروژه نرم‌افزاری را ثبت، مدیریت و قابل بازگشت می‌کند.
+      </p>
+
+      <div class="note">
+        ساده‌ترین تعریف:
+        <strong>Git حافظه هوشمند پروژه است.</strong>
+      </div>
+
+      <h3>Git چه کمکی می‌کند؟</h3>
+      <ul>
+        <li>تغییرات فایل‌ها را ثبت می‌کند.</li>
+        <li>می‌فهمی چه کسی، چه زمانی، چه چیزی را تغییر داده است.</li>
+        <li>اگر پروژه خراب شد، می‌توانی به نسخه قبلی برگردی.</li>
+        <li>می‌توانی برای قابلیت‌های جدید branch جدا بسازی.</li>
+        <li>کار تیمی را منظم و قابل کنترل می‌کند.</li>
+      </ul>
+    </section>
+
+    <section id="difference">
+      <h2>2. تفاوت Git، GitHub و GitLab</h2>
+
+      <div class="grid">
+        <div class="mini-card">
+          <h3>Git</h3>
+          <p>
+            ابزار اصلی کنترل نسخه است که روی سیستم خودت نصب می‌شود.
+          </p>
+          <p>
+            با Git می‌توانی commit بزنی، branch بسازی، تغییرات را ببینی و به نسخه‌های قبلی برگردی.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>GitHub</h3>
+          <p>
+            یک سرویس اینترنتی برای نگهداری مخزن‌های Git است.
+          </p>
+          <p>
+            با GitHub می‌توانی پروژه را آنلاین کنی، با دوستان به اشتراک بگذاری و Pull Request بسازی.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>GitLab</h3>
+          <p>
+            شبیه GitHub است و برای میزبانی repository، همکاری تیمی و CI/CD استفاده می‌شود.
+          </p>
+        </div>
+      </div>
+
+      <div class="success">
+        خلاصه:
+        <br>
+        <strong>Git = ابزار مدیریت نسخه</strong>
+        <br>
+        <strong>GitHub/GitLab = سایت برای نگهداری و اشتراک‌گذاری پروژه Git</strong>
+      </div>
+    </section>
+
+    <section id="storage">
+      <h2>3. Git چه چیزی ذخیره می‌کند و کجا ذخیره می‌کند؟</h2>
+
+      <h3>Git چه چیزهایی ذخیره می‌کند؟</h3>
+      <ul>
+        <li>محتوای فایل‌ها</li>
+        <li>تاریخچه تغییرات</li>
+        <li>Commitها</li>
+        <li>Branchها</li>
+        <li>Tagها</li>
+        <li>اطلاعات نویسنده commit</li>
+        <li>زمان commit</li>
+        <li>ارتباط commitها با هم</li>
+      </ul>
+
+      <h3>Git کجا ذخیره می‌کند؟</h3>
+      <p>
+        وقتی داخل یک پروژه دستور <span class="kbd">git init</span> را اجرا می‌کنی،
+        Git یک پوشه مخفی به نام <span class="kbd">.git</span> در ریشه پروژه می‌سازد.
+      </p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت repository محلی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git init</code></pre>
+      </div>
+
+      <p>ساختار ساده پروژه بعد از git init:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساختار پروژه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>simple-project/
+├── app.py
+├── README.md
+└── .git/</code></pre>
+      </div>
+
+      <h3>داخل پوشه .git چیست؟</h3>
+      <table>
+        <tr>
+          <th>بخش</th>
+          <th>توضیح</th>
+        </tr>
+        <tr>
+          <td><span class="kbd">objects</span></td>
+          <td>داده‌های اصلی Git مثل فایل‌ها، commitها و treeها در این بخش ذخیره می‌شوند.</td>
+        </tr>
+        <tr>
+          <td><span class="kbd">refs</span></td>
+          <td>اشاره‌گرهای branchها و tagها را نگه می‌دارد.</td>
+        </tr>
+        <tr>
+          <td><span class="kbd">HEAD</span></td>
+          <td>نشان می‌دهد الان روی کدام branch یا commit هستی.</td>
+        </tr>
+        <tr>
+          <td><span class="kbd">config</span></td>
+          <td>تنظیمات محلی همین repository را نگه می‌دارد.</td>
+        </tr>
+        <tr>
+          <td><span class="kbd">index</span></td>
+          <td>اطلاعات Staging Area را نگه می‌دارد.</td>
+        </tr>
+      </table>
+
+      <h3>Git چطور ذخیره می‌کند؟</h3>
+      <p>
+        Git مثل این نیست که هر بار فقط یک فایل zip ساده از پروژه بگیرد.
+        Git محتوای فایل‌ها و ساختار پروژه را به شکل object ذخیره می‌کند و برای هر object یک شناسه هش می‌سازد.
+      </p>
+
+      <p>
+        هر commit یک شناسه یکتا دارد، مثل:
+      </p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمونه شناسه commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>e027f90 Update app.py with second message
+8c51afd Initial commit</code></pre>
+      </div>
+
+      <div class="note">
+        هر commit مثل یک عکس لحظه‌ای از وضعیت پروژه است؛ اما Git این کار را هوشمند و بهینه انجام می‌دهد.
+      </div>
+
+      <h3>چرا Git ذخیره می‌کند؟</h3>
+      <ul>
+        <li>برای اینکه تغییرات قابل ردیابی باشند.</li>
+        <li>برای اینکه بتوانی به نسخه‌های قبلی برگردی.</li>
+        <li>برای اینکه تیم بتواند با نظم روی پروژه کار کند.</li>
+        <li>برای اینکه بفهمی چه تغییری باعث باگ شده است.</li>
+        <li>برای اینکه نسخه‌های مختلف پروژه قابل مدیریت باشند.</li>
+      </ul>
+    </section>
+
+    <section id="workflow">
+      <h2>4. چرخه کاری Git</h2>
+
+      <p>Git معمولاً سه ناحیه اصلی دارد:</p>
+
+      <table>
+        <tr>
+          <th>ناحیه</th>
+          <th>توضیح</th>
+        </tr>
+        <tr>
+          <td>Working Directory</td>
+          <td>همان فایل‌هایی که الان داری ویرایش می‌کنی.</td>
+        </tr>
+        <tr>
+          <td>Staging Area</td>
+          <td>تغییراتی که آماده commit شدن هستند.</td>
+        </tr>
+        <tr>
+          <td>Repository</td>
+          <td>تغییراتی که commit شده و در تاریخچه Git ثبت شده‌اند.</td>
+        </tr>
+      </table>
+
+      <div class="success">
+        مسیر اصلی کار:
+        <br>
+        <strong>ویرایش فایل → git add → git commit → git push</strong>
+      </div>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">چرخه رایج Git</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git add .
+git commit -m "Your commit message"
+git push</code></pre>
+      </div>
+    </section>
+
+    <section id="start">
+      <h2>5. شروع یک پروژه ساده با Git</h2>
+
+      <h3>ساخت پوشه پروژه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت پروژه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>mkdir simple-project
+cd simple-project</code></pre>
+      </div>
+
+      <h3>ساخت فایل‌های اولیه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت README و app.py</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>echo "# Simple Project" > README.md
+echo "print('Hello Git')" > app.py</code></pre>
+      </div>
+
+      <h3>فعال کردن Git</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">git init</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git init</code></pre>
+      </div>
+
+      <h3>بررسی وضعیت</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">git status</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status</code></pre>
+      </div>
+
+      <h3>اضافه کردن فایل‌ها به Staging Area</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">git add</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git add .</code></pre>
+      </div>
+
+      <h3>ثبت اولین commit</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">اولین commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git commit -m "Initial commit"</code></pre>
+      </div>
+
+      <h3>دیدن تاریخچه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمایش کوتاه تاریخچه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git log --oneline</code></pre>
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2>6. دستورات مهم Git</h2>
+
+      <h3>تنظیم نام و ایمیل</h3>
+      <p>این تنظیمات معمولاً یک بار روی سیستم انجام می‌شود.</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تنظیم نام و ایمیل</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</code></pre>
+      </div>
+
+      <h3>دیدن تنظیمات</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمایش تنظیمات Git</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git config --list</code></pre>
+      </div>
+
+      <h3>بررسی وضعیت فایل‌ها</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">وضعیت پروژه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status</code></pre>
+      </div>
+
+      <h3>دیدن تغییرات قبل از add</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تفاوت فایل‌ها</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git diff</code></pre>
+      </div>
+
+      <h3>دیدن تغییرات stage شده</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تفاوت تغییرات آماده commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git diff --staged</code></pre>
+      </div>
+
+      <h3>اضافه کردن همه تغییرات</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">add همه فایل‌ها</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git add .</code></pre>
+      </div>
+
+      <h3>اضافه کردن یک فایل خاص</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">add یک فایل</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git add app.py</code></pre>
+      </div>
+
+      <h3>ثبت commit</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git commit -m "Write a clear commit message"</code></pre>
+      </div>
+
+      <h3>نمایش تاریخچه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">log ساده</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git log --oneline</code></pre>
+      </div>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">log گرافی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git log --oneline --graph --decorate --all</code></pre>
+      </div>
+
+      <h3>حذف فایل از Stage</h3>
+      <p>اگر فایلی را add کردی ولی نمی‌خواهی در commit بعدی باشد:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">خارج کردن از stage</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git restore --staged app.py</code></pre>
+      </div>
+
+      <h3>برگرداندن تغییرات فایل</h3>
+      <p>اگر تغییرات یک فایل را نمی‌خواهی و می‌خواهی به آخرین commit برگردد:</p>
+
+      <div class="danger">
+        دقت کن: این دستور تغییرات ذخیره‌نشده فایل را از بین می‌برد.
+      </div>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">برگرداندن فایل</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git restore app.py</code></pre>
+      </div>
+
+      <h3>دیدن آدرس remote</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">remote ها</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git remote -v</code></pre>
+      </div>
+    </section>
+
+    <section id="github">
+      <h2>7. اتصال پروژه به GitHub</h2>
+
+      <h3>قدم‌های کلی</h3>
+      <ol>
+        <li>در GitHub یک Repository جدید بساز.</li>
+        <li>اسمش را مثلاً <span class="kbd">simple-project</span> بگذار.</li>
+        <li>اگر قبلاً پروژه محلی داری، تیک ساخت README را نزن.</li>
+        <li>دستورات remote و push را اجرا کن.</li>
+      </ol>
+
+      <h3>اتصال پروژه محلی به GitHub</h3>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">افزودن remote</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git remote add origin https://github.com/USERNAME/simple-project.git</code></pre>
+      </div>
+
+      <h3>تغییر نام branch اصلی به main</h3>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">branch اصلی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git branch -M main</code></pre>
+      </div>
+
+      <h3>ارسال پروژه به GitHub</h3>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">اولین push</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git push -u origin main</code></pre>
+      </div>
+
+      <div class="note">
+        بار اول ممکن است GitHub از تو بخواهد در مرورگر login کنی و روی دکمه Authorize کلیک کنی.
+        بعد از تأیید، به ترمینال برگرد و صبر کن تا push کامل شود.
+      </div>
+
+      <h3>push های بعدی</h3>
+      <p>بعد از اولین push، معمولاً فقط کافی است بنویسی:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">push بعدی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git push</code></pre>
+      </div>
+
+      <h3>گرفتن آخرین تغییرات از GitHub</h3>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">pull</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git pull</code></pre>
+      </div>
+
+      <h3>Clone کردن پروژه</h3>
+      <p>دوستت برای دریافت پروژه می‌تواند این دستور را بزند:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">clone</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git clone https://github.com/USERNAME/simple-project.git</code></pre>
+      </div>
+    </section>
+
+    <section id="branches">
+      <h2>8. Branch و Merge</h2>
+
+      <p>
+        Branch یعنی شاخه جداگانه برای کار کردن روی یک قابلیت یا اصلاح باگ،
+        بدون اینکه branch اصلی پروژه خراب شود.
+      </p>
+
+      <h3>دیدن branchها</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">لیست branchها</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git branch</code></pre>
+      </div>
+
+      <h3>ساخت branch جدید و رفتن روی آن</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت branch</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git switch -c feature/add-homepage</code></pre>
+      </div>
+
+      <h3>رفتن به branch دیگر</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تغییر branch</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git switch main</code></pre>
+      </div>
+
+      <h3>Merge کردن branch به main</h3>
+      <p>اول روی main برو، بعد branch موردنظر را merge کن:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">merge</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git switch main
+git merge feature/add-homepage</code></pre>
+      </div>
+
+      <h3>ارسال branch به GitHub</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">push branch</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git push -u origin feature/add-homepage</code></pre>
+      </div>
+
+      <h3>حذف branch محلی</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">حذف branch محلی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git branch -d feature/add-homepage</code></pre>
+      </div>
+
+      <h3>حذف branch از GitHub</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">حذف branch remote</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git push origin --delete feature/add-homepage</code></pre>
+      </div>
+    </section>
+
+    <section id="ignore">
+      <h2>9. فایل .gitignore</h2>
+
+      <p>
+        فایل <span class="kbd">.gitignore</span> مشخص می‌کند چه فایل‌ها و پوشه‌هایی نباید وارد Git شوند.
+      </p>
+
+      <h3>چرا لازم است؟</h3>
+      <ul>
+        <li>فایل‌های موقت وارد repository نشوند.</li>
+        <li>رمزها و اطلاعات حساس push نشوند.</li>
+        <li>حجم repository بی‌دلیل زیاد نشود.</li>
+        <li>فایل‌های مخصوص سیستم شخصی هر فرد وارد پروژه نشوند.</li>
+      </ul>
+
+      <div class="danger">
+        هرگز فایل‌هایی مثل <span class="kbd">.env</span>، رمز دیتابیس، API Key و Token را داخل GitHub عمومی قرار نده.
+      </div>
+
+      <h3>نمونه .gitignore برای Python</h3>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمونه .gitignore</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+.DS_Store
+.idea/
+.vscode/</code></pre>
+      </div>
+
+      <h3>ساخت فایل .gitignore</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت gitignore</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>echo "__pycache__/" > .gitignore
+echo ".env" >> .gitignore
+echo ".venv/" >> .gitignore
+git add .gitignore
+git commit -m "Add gitignore"</code></pre>
+      </div>
+    </section>
+
+    <section id="team">
+      <h2>10. اشتراک‌گذاری و کار تیمی</h2>
+
+      <h3>اشتراک با دوستان</h3>
+      <p>
+        اگر repository تو public باشد، لینک آن را برای دوستانت بفرست:
+      </p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمونه لینک repository</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>https://github.com/USERNAME/simple-project</code></pre>
+      </div>
+
+      <h3>دوستت چطور پروژه را دریافت کند؟</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">clone توسط همکار</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git clone https://github.com/USERNAME/simple-project.git
+cd simple-project</code></pre>
+      </div>
+
+      <h3>جریان ساده کار تیمی</h3>
+      <ol>
+        <li>هر فرد آخرین تغییرات را می‌گیرد: <span class="kbd">git pull</span></li>
+        <li>روی branch جدا کار می‌کند.</li>
+        <li>تغییرات را commit می‌کند.</li>
+        <li>branch را push می‌کند.</li>
+        <li>در GitHub Pull Request می‌سازد.</li>
+        <li>بعد از بررسی، تغییرات به main merge می‌شود.</li>
+      </ol>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">جریان پیشنهادی کار تیمی</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git pull
+git switch -c feature/my-task
+
+# edit files
+
+git status
+git add .
+git commit -m "Add my task"
+git push -u origin feature/my-task</code></pre>
+      </div>
+
+      <h3>اشتراک با ChatGPT</h3>
+      <p>
+        برای کمک گرفتن از ChatGPT می‌توانی یکی از این‌ها را ارسال کنی:
+      </p>
+      <ul>
+        <li>لینک GitHub پروژه</li>
+        <li>خروجی <span class="kbd">git status</span></li>
+        <li>خروجی <span class="kbd">git log --oneline</span></li>
+        <li>ساختار پوشه‌ها</li>
+        <li>محتوای فایل‌های مهم</li>
+        <li>متن خطا</li>
+      </ul>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">اطلاعات مفید برای ارسال به ChatGPT</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git log --oneline --graph --decorate --all
+git remote -v</code></pre>
+      </div>
+    </section>
+
+    <section id="problems">
+      <h2>11. خطاها و مشکلات رایج</h2>
+
+      <h3>خطای نام و ایمیل تنظیم نشده</h3>
+      <p>اگر هنگام commit گفت user.name یا user.email تنظیم نیست:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">حل خطای نام و ایمیل</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</code></pre>
+      </div>
+
+      <h3>خطای remote origin already exists</h3>
+      <p>یعنی قبلاً remote با نام origin ساخته شده است.</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">دیدن remote موجود</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git remote -v</code></pre>
+      </div>
+
+      <p>اگر آدرس اشتباه است، آن را تغییر بده:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تغییر آدرس origin</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git remote set-url origin https://github.com/USERNAME/simple-project.git</code></pre>
+      </div>
+
+      <h3>خطای authentication در GitHub</h3>
+      <p>
+        هنگام push ممکن است GitHub مرورگر را باز کند و از تو بخواهد login و authorize کنی.
+        بعد از تأیید، به ترمینال برگرد.
+      </p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">اجرای مجدد push بعد از login</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git push -u origin main</code></pre>
+      </div>
+
+      <h3>اگر push گفت remote شامل تغییراتی است که تو نداری</h3>
+      <p>اول تغییرات GitHub را بگیر:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">pull قبل از push</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git pull --rebase origin main
+git push</code></pre>
+      </div>
+
+      <h3>اگر اشتباهی commit کردی</h3>
+      <p>اگر فقط پیام commit اشتباه است و هنوز push نکردی:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">تغییر پیام آخرین commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git commit --amend -m "New commit message"</code></pre>
+      </div>
+
+      <h3>برگرداندن یک commit با commit جدید</h3>
+      <p>روش امن برای undo کردن commit، مخصوصاً اگر push شده باشد:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">revert</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git revert COMMIT_HASH</code></pre>
+      </div>
+    </section>
+
+    <section id="example">
+      <h2>12. مثال کامل عملی از صفر تا GitHub</h2>
+
+      <p>
+        در این مثال یک پروژه ساده Python می‌سازیم، با Git ذخیره می‌کنیم و به GitHub می‌فرستیم.
+      </p>
+
+      <h3>مرحله 1: ساخت پروژه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ساخت پوشه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>mkdir simple-project
+cd simple-project</code></pre>
+      </div>
+
+      <h3>مرحله 2: ساخت فایل‌ها</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">فایل‌های اولیه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>echo "# Simple Project" > README.md
+echo "print('Hello Git')" > app.py</code></pre>
+      </div>
+
+      <h3>مرحله 3: شروع Git</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">init</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git init</code></pre>
+      </div>
+
+      <h3>مرحله 4: بررسی وضعیت</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">status</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status</code></pre>
+      </div>
+
+      <h3>مرحله 5: ثبت اولین نسخه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">first commit</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git add .
+git commit -m "Initial commit"</code></pre>
+      </div>
+
+      <h3>مرحله 6: ایجاد تغییر دوم</h3>
+      <p>فایل <span class="kbd">app.py</span> را این‌طور تغییر بده:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">محتوای app.py</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>print("Hello Git")
+print("My second version")</code></pre>
+      </div>
+
+      <p>بعد commit بزن:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">commit تغییر دوم</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git add app.py
+git commit -m "Update app.py with second message"</code></pre>
+      </div>
+
+      <h3>مرحله 7: دیدن تاریخچه</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">log</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git log --oneline</code></pre>
+      </div>
+
+      <p>نمونه خروجی:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نمونه خروجی log</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>e027f90 Update app.py with second message
+8c51afd Initial commit</code></pre>
+      </div>
+
+      <h3>مرحله 8: اتصال به GitHub</h3>
+      <p>
+        ابتدا در GitHub یک repository به نام <span class="kbd">simple-project</span> بساز.
+        سپس:
+      </p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">اتصال به GitHub</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git remote add origin https://github.com/USERNAME/simple-project.git
+git branch -M main
+git push -u origin main</code></pre>
+      </div>
+
+      <h3>مرحله 9: تغییر جدید و push دوباره</h3>
+      <p>فایل app.py را این‌طور کن:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">نسخه جدید app.py</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>print("Hello Git")
+print("My second version")
+print("This project is now on GitHub")</code></pre>
+      </div>
+
+      <p>بعد:</p>
+
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">commit و push</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git add app.py
+git commit -m "Add GitHub sharing message"
+git push</code></pre>
+      </div>
+
+      <div class="success">
+        نتیجه:
+        <br>
+        پروژه تو هم در سیستم خودت ذخیره شده، هم در GitHub قرار گرفته و با دوستانت قابل اشتراک است.
+      </div>
+    </section>
+
+    <section>
+      <h2>13. چک‌لیست سریع روزانه Git</h2>
+
+      <h3>وقتی می‌خواهی کار را شروع کنی</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">شروع روز کاری</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git pull</code></pre>
+      </div>
+
+      <h3>وقتی تغییر انجام دادی</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">ثبت تغییرات</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git diff
+git add .
+git commit -m "Describe your change"
+git push</code></pre>
+      </div>
+
+      <h3>وقتی می‌خواهی branch جدید بسازی</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">branch جدید</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git switch main
+git pull
+git switch -c feature/new-feature</code></pre>
+      </div>
+
+      <h3>وقتی می‌خواهی وضعیت کلی را ببینی</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">وضعیت و تاریخچه</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git status
+git branch
+git log --oneline --graph --decorate --all
+git remote -v</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>14. بهترین عادت‌ها در Git</h2>
+
+      <ul>
+        <li>Commitهای کوچک و معنی‌دار بزن.</li>
+        <li>پیام commit واضح بنویس.</li>
+        <li>قبل از شروع کار جدید، <span class="kbd">git pull</span> بزن.</li>
+        <li>برای قابلیت‌های جدید branch جدا بساز.</li>
+        <li>فایل‌های حساس مثل <span class="kbd">.env</span> را commit نکن.</li>
+        <li>قبل از push، <span class="kbd">git status</span> را چک کن.</li>
+        <li>اگر مطمئن نیستی، قبل از اجرای دستورات خطرناک از یک نفر کمک بگیر.</li>
+      </ul>
+
+      <h3>نمونه پیام‌های خوب commit</h3>
+      <div class="cmd">
+        <div class="cmd-header">
+          <span class="cmd-title">commit message examples</span>
+          <button class="copy-btn">کپی</button>
+        </div>
+        <pre><code>git commit -m "Add login page"
+git commit -m "Fix user validation bug"
+git commit -m "Update README with setup instructions"
+git commit -m "Add .gitignore for Python project"
+git commit -m "Refactor payment calculation logic"</code></pre>
+      </div>
+    </section>
+
+    <div class="footer">
+      این فایل به عنوان مرجع شخصی Git و GitHub ساخته شده است.
+      <br>
+      پیشنهاد: همین فایل را هم داخل پروژه‌های آموزشی خودت نگه دار.
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll(".cmd").forEach(function(block) {
+      const button = block.querySelector(".copy-btn");
+      const code = block.querySelector("code");
+
+      button.addEventListener("click", async function() {
+        const text = code.innerText;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          const old = button.innerText;
+          button.innerText = "کپی شد ✅";
+
+          setTimeout(function() {
+            button.innerText = old;
+          }, 1200);
+        } catch (e) {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+
+          const old = button.innerText;
+          button.innerText = "کپی شد ✅";
+
+          setTimeout(function() {
+            button.innerText = old;
+          }, 1200);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
